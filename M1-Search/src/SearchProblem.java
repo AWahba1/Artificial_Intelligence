@@ -80,8 +80,32 @@
             List<Node> children = new ArrayList<Node>();
 
             State currentState = parent.getState();
-            children.add(new Node(getNewState(currentState, Operator.REQUEST_FOOD), parent, 1, 0, "WAIT"));
-            // expand logic HERE
+
+            // Handle delivery
+            // Handle no requests when there is a delivery
+            // Handle only 1 request at a time
+            // Handle case if parent cost is 0
+            // Handle when delivery should be received
+            // Zabat el prices fel new node
+
+            children.add(new Node(getNewState(currentState, Operator.REQUEST_FOOD), parent, parent.getDepth() + 1, 
+                calculatePathCost(Operator.REQUEST_FOOD), Operator.REQUEST_FOOD));
+            
+            children.add(new Node(getNewState(currentState, Operator.REQUEST_MATERIAL), parent, parent.getDepth() + 1, 
+                calculatePathCost(Operator.REQUEST_MATERIAL), Operator.REQUEST_MATERIAL));
+
+            children.add(new Node(getNewState(currentState, Operator.REQUEST_ENERGY), parent, parent.getDepth() + 1, 
+                calculatePathCost(Operator.REQUEST_ENERGY), Operator.REQUEST_ENERGY));
+
+            children.add(new Node(getNewState(currentState, Operator.WAIT), parent, parent.getDepth() + 1, 
+                calculatePathCost(Operator.WAIT), Operator.WAIT));
+
+            children.add(new Node(getNewState(currentState, Operator.BUILD1), parent, parent.getDepth() + 1, 
+                calculatePathCost(Operator.BUILD1), Operator.BUILD1));
+
+            children.add(new Node(getNewState(currentState, Operator.BUILD2), parent, parent.getDepth() + 1, 
+                calculatePathCost(Operator.BUILD2), Operator.BUILD2));
+
             return children;
         }
 

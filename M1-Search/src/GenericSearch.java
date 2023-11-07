@@ -8,7 +8,7 @@ public class GenericSearch {
                 return;
             }
             Node node = dataContainer.remove();
-            if (problem.isGoal(node.getState())) {
+            if (problem.isGoalState(node.getState())) {
                 return;
             }
 
