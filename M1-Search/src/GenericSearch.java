@@ -1,15 +1,15 @@
 public class GenericSearch {
 
     // Generic Search Problem method
-    public void search(SearchProblem problem, DataContainer dataContainer) {
+    public Node search(SearchProblem problem, DataContainer dataContainer) {
         dataContainer.add(problem.getRoot());
         while (true) {
             if (dataContainer.isEmpty()) {
-                return;
+                return null;
             }
             Node node = dataContainer.remove();
             if (problem.isGoalState(node.getState())) {
-                return;
+                return node;
             }
 
             // expand logic

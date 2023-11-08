@@ -46,7 +46,30 @@ public class Node {
     
     }
 
-    public int getHeuristicValue() {
-        // heuristic fn logic
+    public int getHeuristicValue_1() {
+        return (int) (100 - this.state.getProsperity()) / Math.max(SearchProblem.prosperityBUILD1, SearchProblem.prosperityBUILD2);
     }
+
+    public int getHeuristicValue_2() {
+        int buildsRemaining_1 =  (int) (100 - this.state.getProsperity()) / SearchProblem.prosperityBUILD1;
+        int buildsRemaining_2 =  (int) (100 - this.state.getProsperity()) / SearchProblem.prosperityBUILD2;
+        int foodNeeded_1 = Math.max(buildsRemaining_1 * SearchProblem.foodBUILD1 - this.state.getFood(), 0);
+        int foodNeeded_2 = Math.max(buildsRemaining_2 * SearchProblem.foodBUILD2 - this.state.getFood(), 0);
+        return Math.min(buildsRemaining_1 + foodNeeded_1, buildsRemaining_2 + foodNeeded_2);
+    }
+
+    public String getPath() {
+        Stack<Operator> stack = new Stack<Operator>();
+        Node node = this;
+        String result = "";
+        while (node.getParent() != null) {
+            stack.push(node.getOperatorApplied());
+            node = node.getParent();
+        }
+        while (!stack.isEmpty()) {
+            result += stack.pop() + ",";
+        }
+        return result.substring(0, result.length() - 1);
+    }
+
 }

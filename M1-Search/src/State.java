@@ -1,12 +1,15 @@
 import java.util.*;
 public class State {
-        private int food, energy, material, prosperity;
+        private int food, energy, material, prosperity, delay;
+        private Resource resource;
 
-        public State(int food, int energy, int material, int prosperity) {
+        public State(int food, int energy, int material, int prosperity, int delay, Resource resource) {
             this.food = food;
             this.energy = energy;
             this.material = material;
             this.prosperity = prosperity;
+            this.delay = delay;
+            this.resource = resource;
         }
 
         public int getFood() {
@@ -25,6 +28,13 @@ public class State {
             return prosperity;
         }
 
+        public int getDelay() {
+            return delay;
+        }
+
+        public Resource getResource() {
+            return resource;
+        }
 
         public List<State> getSuccessors() {
             List<State> successors = new ArrayList<State>();
