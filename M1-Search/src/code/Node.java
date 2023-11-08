@@ -1,5 +1,5 @@
 package code;
-import java.util.*;
+import java.util.Stack;
 
 enum Operator {
     REQUEST_FOOD,
@@ -54,8 +54,8 @@ public class Node {
     public int getHeuristicValue_2() {
         int buildsRemaining_1 =  (int) (100 - this.state.getProsperity()) / SearchProblem.prosperityBUILD1;
         int buildsRemaining_2 =  (int) (100 - this.state.getProsperity()) / SearchProblem.prosperityBUILD2;
-        int foodNeeded_1 = Math.max(buildsRemaining_1 * SearchProblem.foodBUILD1 - this.state.getFood(), 0);
-        int foodNeeded_2 = Math.max(buildsRemaining_2 * SearchProblem.foodBUILD2 - this.state.getFood(), 0);
+        int foodNeeded_1 = Math.max(buildsRemaining_1 * SearchProblem.foodUseBUILD1 - this.state.getFood(), 0);
+        int foodNeeded_2 = Math.max(buildsRemaining_2 * SearchProblem.foodUseBUILD2 - this.state.getFood(), 0);
         return Math.min(buildsRemaining_1 + foodNeeded_1, buildsRemaining_2 + foodNeeded_2);
     }
 

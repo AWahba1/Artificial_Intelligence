@@ -1,44 +1,46 @@
 package code;
-import java.util.*;
-public class LLAP extends GenericSearch {
+import java.util.Comparator;
 
-    public void solve(String inputString, String strategy, boolean visualize) {
-        SearchProblem problem = new SearchProblem(inputString, strategy);
+public class LLAPSearch extends GenericSearch {
+
+    public static String solve(String inputString, String strategy, boolean visualize) {
+    	GenericSearch gs = new GenericSearch();
+        SearchProblem problem = new SearchProblem(inputString, strategy, visualize);
         Node reachedNode = null;
         String result = "";
         switch (strategy) {
             case "BF":
-                reachedNode = super.search(problem, new QueueContainer());
+                reachedNode = gs.search(problem, new QueueContainer());
                 break;
             case "DF": 
-                reachedNode = super.search(problem, new StackContainer());
+                reachedNode = gs.search(problem, new StackContainer());
                 break;
             case "ID":
                 {   
                     int cutoff = 0 ;
                     while (reachedNode == null)
                         {
-                            problem.setCutoff(cutoff);
-                            reachedNode = super.search(problem, new StackContainer());
+                            problem.setCutOff(cutoff);
+                            reachedNode = gs.search(problem, new StackContainer());
                             cutoff++;
                         }
                     break;
                 }
                
             case "UC":   
-                reachedNode = super.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("UC")));
+                reachedNode = gs.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("UC")));
                 break;
             case "GR1":  // separate between 2 heuristics
-                reachedNode = super.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("GR1")));
+                reachedNode = gs.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("GR1")));
                 break;
             case "GR2":  // separate between 2 heuristics
-                reachedNode = super.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("GR2")));
+                reachedNode = gs.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("GR2")));
                 break;
             case "AS1":  // separate between 2 heuristics
-                reachedNode = super.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("AS1")));
+                reachedNode = gs.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("AS1")));
                 break;
             case "AS2":  // separate between 2 heuristics
-                reachedNode = super.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("AS2")));
+                reachedNode = gs.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("AS2")));
                 break;
         }
         if (reachedNode == null) {
@@ -46,9 +48,10 @@ public class LLAP extends GenericSearch {
         } else {
             result = reachedNode.getPath() + ";" + reachedNode.getPathCost() + ";" + (problem.getNodesCounter() +1);
         }
+        return result;
     }
 
-    public Comparator<Node> getComparatorBasedOnStrategy(String strategy){
+    public static Comparator<Node> getComparatorBasedOnStrategy(String strategy){
         switch(strategy){
             case "GR1": return new Comparator<Node>() {
                     @Override

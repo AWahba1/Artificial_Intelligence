@@ -1,5 +1,6 @@
 package code;
-import java.util.*;
+import java.util.Stack;
+
 public class StackContainer implements DataContainer {
     
     private Stack<Node> stack;

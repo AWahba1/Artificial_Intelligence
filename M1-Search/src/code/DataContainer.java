@@ -1,6 +1,4 @@
 package code;
-import java.util.*;
-
 
 public interface DataContainer {
 

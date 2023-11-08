@@ -1,6 +1,7 @@
 package code;
-enum Resource{
-    FOOD,
+
+public enum Resource {
+	FOOD,
     MATERIAL,
     ENERGY
 }

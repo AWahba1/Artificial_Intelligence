@@ -1,4 +1,7 @@
 package code;
+
+import java.util.List;
+
 public class GenericSearch {
 
     // Generic Search Problem method
@@ -9,7 +12,7 @@ public class GenericSearch {
                 return null;
             }
             Node node = dataContainer.remove();
-            if (problem.isGoalState(node.getState())) {
+            if (problem.isGoalState(node)) {
                 return node;
             }
 

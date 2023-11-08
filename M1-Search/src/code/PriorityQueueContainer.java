@@ -1,5 +1,7 @@
 package code;
-import java.util.*;
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 public class PriorityQueueContainer implements DataContainer {
     
     private PriorityQueue<Node> queue;
