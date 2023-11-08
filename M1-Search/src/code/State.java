@@ -1,3 +1,4 @@
+package code;
 import java.util.*;
 public class State {
         private int food, energy, material, prosperity, delay;
@@ -36,9 +37,7 @@ public class State {
             return resource;
         }
 
-        public List<State> getSuccessors() {
-            List<State> successors = new ArrayList<State>();
-            // expand logic
-            return successors;
-        }
+        public String getStringRepresentation() {
+            return String.format("%d-%d-%d-%d-%d-%s", food, energy, material, prosperity, delay, resource.toString());
+        } 
     }

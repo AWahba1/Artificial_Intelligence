@@ -1,3 +1,4 @@
+package code;
 public class GenericSearch {
 
     // Generic Search Problem method

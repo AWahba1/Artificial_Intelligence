@@ -1,3 +1,4 @@
+package code;
 import java.util.*;
 
 enum Operator {
@@ -67,7 +68,26 @@ public class Node {
             node = node.getParent();
         }
         while (!stack.isEmpty()) {
-            result += stack.pop() + ",";
+            switch(stack.pop()) {
+                case REQUEST_FOOD:
+                    result += "RequestFood,";
+                    break;
+                case REQUEST_MATERIAL:
+                    result += "RequestMaterials,";
+                    break;
+                case REQUEST_ENERGY:
+                    result += "RequestEnergy,";
+                    break;
+                case WAIT:
+                    result += "WAIT,";
+                    break;
+                case BUILD1:
+                    result += "BUILD1,";
+                    break;
+                case BUILD2:
+                    result += "BUILD2,";
+                    break;
+            }
         }
         return result.substring(0, result.length() - 1);
     }

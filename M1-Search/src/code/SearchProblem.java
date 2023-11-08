@@ -15,7 +15,14 @@ public class SearchProblem {
   static int prosperityBUILD1, prosperityBUILD2, foodUseBUILD1, foodUseBUILD2;
   int nodesCounter = 0;
 
-  public SearchProblem(String inputString) {
+
+  String strategy;
+  int cutoff;
+
+  // Repeated States
+  HashSet<String> visitedStates;
+
+  public SearchProblem(String inputString, String strategy) {
     parseInputString(inputString);
 
     State initialState = new State(
@@ -27,6 +34,10 @@ public class SearchProblem {
       null
     );
     this.root = new Node(initialState, null, 0, 0, null);
+    this.visitedStates = new HashSet<>();
+
+    // To handle Iterative Deepening
+    this.strategy = strategy;
   }
 
   private void parseInputString(String inputString) {
@@ -57,17 +68,17 @@ public class SearchProblem {
 
     String[] prices1 = lines[6].split(",");
     this.priceBUILD1 = Integer.parseInt(prices1[0]);
-    this.foodUseBUILD1 = Integer.parseInt(prices1[1]);
+    foodUseBUILD1 = Integer.parseInt(prices1[1]);
     this.materialsUseBUILD1 = Integer.parseInt(prices1[2]);
     this.energyUseBUILD1 = Integer.parseInt(prices1[3]);
-    this.prosperityBUILD1 = Integer.parseInt(prices1[4]);
+    prosperityBUILD1 = Integer.parseInt(prices1[4]);
 
     String[] prices2 = lines[7].split(",");
     this.priceBUILD2 = Integer.parseInt(prices2[0]);
-    this.foodUseBUILD2 = Integer.parseInt(prices2[1]);
+    foodUseBUILD2 = Integer.parseInt(prices2[1]);
     this.materialsUseBUILD2 = Integer.parseInt(prices2[2]);
     this.energyUseBUILD2 = Integer.parseInt(prices2[3]);
-    this.prosperityBUILD2 = Integer.parseInt(prices2[4]);
+    prosperityBUILD2 = Integer.parseInt(prices2[4]);
   }
 
   public Node getRoot() {
@@ -75,101 +86,27 @@ public class SearchProblem {
   }
 
   public boolean isGoalState(Node node) {
-    return node.getState().getProsperity() == 100;
+    return node.getState().getProsperity() >= 100;
   }
+
+        // Perform iterative deepening and handle a cutoff that increases
+      // by 1 each time when expanding
+
+
 
   public List<Node> expand(Node parent) {
     nodesCounter++;
     List<Node> children = new ArrayList<Node>();
-    State currentState = parent.getState();
-    if (
-      parent.getState().getFood() >= 1 &&
-      parent.getState().getEnergy() >= 1 &&
-      parent.getState().getMaterial() >= 1
-    ) {
-      if (parent.getState().getDelay() == 0) {
-        if (
-          parent.getPathCost() +
-          calculatePathCost(Operator.REQUEST_FOOD) <=
-          100000
-        ) {
-          children.add(
-            new Node(
-              getNewState(currentState, Operator.REQUEST_FOOD),
-              parent,
-              parent.getDepth() + 1,
-              parent.getPathCost() + calculatePathCost(Operator.REQUEST_FOOD),
-              Operator.REQUEST_FOOD
-            )
-          );
-        }
-        if (
-          parent.getPathCost() +
-          calculatePathCost(Operator.REQUEST_MATERIAL) <=
-          100000
-        ) {
-          children.add(
-            new Node(
-              getNewState(currentState, Operator.REQUEST_MATERIAL),
-              parent,
-              parent.getDepth() + 1,
-              parent.getPathCost() +
-              calculatePathCost(Operator.REQUEST_MATERIAL),
-              Operator.REQUEST_MATERIAL
-            )
-          );
-        }
-        if (
-          parent.getPathCost() +
-          calculatePathCost(Operator.REQUEST_ENERGY) <=
-          100000
-        ) {
-          children.add(
-            new Node(
-              getNewState(currentState, Operator.REQUEST_ENERGY),
-              parent,
-              parent.getDepth() + 1,
-              parent.getPathCost() + calculatePathCost(Operator.REQUEST_ENERGY),
-              Operator.REQUEST_ENERGY
-            )
-          );
-        }
-      }
-      if (parent.getPathCost() + calculatePathCost(Operator.WAIT) <= 100000) {
-        children.add(
-          new Node(
-            getNewState(currentState, Operator.WAIT),
-            parent,
-            parent.getDepth() + 1,
-            parent.getPathCost() + calculatePathCost(Operator.WAIT),
-            Operator.WAIT
-          )
-        );
-      }
-      if (parent.getPathCost() + calculatePathCost(Operator.BUILD1) <= 100000) {
-        children.add(
-          new Node(
-            getNewState(currentState, Operator.BUILD1),
-            parent,
-            parent.getDepth() + 1,
-            parent.getPathCost() + calculatePathCost(Operator.BUILD1),
-            Operator.BUILD1
-          )
-        );
-      }
-      if (parent.getPathCost() + calculatePathCost(Operator.BUILD2) <= 100000) {
-        children.add(
-          new Node(
-            getNewState(currentState, Operator.BUILD2),
-            parent,
-            parent.getDepth() + 1,
-            parent.getPathCost() + calculatePathCost(Operator.BUILD2),
-            Operator.BUILD2
-          )
-        );
-      }
+    if (strategy == "ID")
+    {
+        if (parent.getDepth() < cutoff)
+          children = expandNode(parent);
+        else if (parent.getDepth() == cutoff)
+          return children;
     }
-
+    else{
+      children = expandNode(parent);
+    }
     return children;
   }
 
@@ -304,5 +241,119 @@ public class SearchProblem {
 
   public int getNodesCounter() {
     return nodesCounter;
+  }
+
+  public List<Node> expandNode(Node parent){
+    State currentState = parent.getState();
+    if (
+      parent.getState().getFood() >= 1 &&
+      parent.getState().getEnergy() >= 1 &&
+      parent.getState().getMaterial() >= 1
+    ) {
+      if (parent.getState().getDelay() == 0) {
+        if (
+          parent.getPathCost() +
+          calculatePathCost(Operator.REQUEST_FOOD) <=
+          100000
+        && !visitedStates.contains(getNewState(currentState, Operator.REQUEST_FOOD).getStringRepresentation())) {
+          children.add(
+            new Node(
+              getNewState(currentState, Operator.REQUEST_FOOD),
+              parent,
+              parent.getDepth() + 1,
+              parent.getPathCost() + calculatePathCost(Operator.REQUEST_FOOD),
+              Operator.REQUEST_FOOD
+            )
+          );
+          visitedStates.add(getNewState(currentState, Operator.REQUEST_FOOD).getStringRepresentation());
+        }
+        if (
+          parent.getPathCost() +
+          calculatePathCost(Operator.REQUEST_MATERIAL) <=
+          100000
+          && !visitedStates.contains(getNewState(currentState, Operator.REQUEST_MATERIAL).getStringRepresentation())
+        ) {
+          children.add(
+            new Node(
+              getNewState(currentState, Operator.REQUEST_MATERIAL),
+              parent,
+              parent.getDepth() + 1,
+              parent.getPathCost() +
+              calculatePathCost(Operator.REQUEST_MATERIAL),
+              Operator.REQUEST_MATERIAL
+            )
+          );
+          visitedStates.add(getNewState(currentState, Operator.REQUEST_MATERIAL).getStringRepresentation());
+
+        }
+        if (
+          parent.getPathCost() +
+          calculatePathCost(Operator.REQUEST_ENERGY) <=
+          100000
+          && !visitedStates.contains(getNewState(currentState, Operator.REQUEST_ENERGY).getStringRepresentation())
+        ) {
+          children.add(
+            new Node(
+              getNewState(currentState, Operator.REQUEST_ENERGY),
+              parent,
+              parent.getDepth() + 1,
+              parent.getPathCost() + calculatePathCost(Operator.REQUEST_ENERGY),
+              Operator.REQUEST_ENERGY
+            )
+          );
+          visitedStates.add(getNewState(currentState, Operator.REQUEST_ENERGY).getStringRepresentation());
+
+        }
+      }
+      if (parent.getPathCost() + calculatePathCost(Operator.WAIT) <= 100000 
+      && !visitedStates.contains(getNewState(currentState, Operator.WAIT).getStringRepresentation())) {
+        children.add(
+          new Node(
+            getNewState(currentState, Operator.WAIT),
+            parent,
+            parent.getDepth() + 1,
+            parent.getPathCost() + calculatePathCost(Operator.WAIT),
+            Operator.WAIT
+          )
+        );
+        visitedStates.add(getNewState(currentState, Operator.WAIT).getStringRepresentation());
+
+      }
+      if (parent.getPathCost() + calculatePathCost(Operator.BUILD1) <= 100000
+      && !visitedStates.contains(getNewState(currentState, Operator.BUILD1).getStringRepresentation())) {
+        children.add(
+          new Node(
+            getNewState(currentState, Operator.BUILD1),
+            parent,
+            parent.getDepth() + 1,
+            parent.getPathCost() + calculatePathCost(Operator.BUILD1),
+            Operator.BUILD1
+          )
+        );
+       visitedStates.add(getNewState(currentState, Operator.BUILD1).getStringRepresentation());
+
+      }
+      if (parent.getPathCost() + calculatePathCost(Operator.BUILD2) <= 100000
+      && !visitedStates.contains(getNewState(currentState, Operator.BUILD2).getStringRepresentation())) {
+        children.add(
+          new Node(
+            getNewState(currentState, Operator.BUILD2),
+            parent,
+            parent.getDepth() + 1,
+            parent.getPathCost() + calculatePathCost(Operator.BUILD2),
+            Operator.BUILD2
+          )
+        );
+      visitedStates.add(getNewState(currentState, Operator.BUILD2).getStringRepresentation());
+
+      }
+    }
+
+
+  } // end expand node
+
+  public setCutOff(int cutoff)
+  {
+    this.cutoff = cutoff;
   }
 }

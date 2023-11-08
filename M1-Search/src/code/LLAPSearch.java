@@ -1,17 +1,30 @@
+package code;
 import java.util.*;
 public class LLAP extends GenericSearch {
 
     public void solve(String inputString, String strategy, boolean visualize) {
-        SearchProblem problem = new SearchProblem(inputString);
+        SearchProblem problem = new SearchProblem(inputString, strategy);
         Node reachedNode = null;
         String result = "";
         switch (strategy) {
             case "BF":
                 reachedNode = super.search(problem, new QueueContainer());
                 break;
-            case "DF": case "ID":
+            case "DF": 
                 reachedNode = super.search(problem, new StackContainer());
                 break;
+            case "ID":
+                {   
+                    int cutoff = 0 ;
+                    while (reachedNode == null)
+                        {
+                            problem.setCutoff(cutoff);
+                            reachedNode = super.search(problem, new StackContainer());
+                            cutoff++;
+                        }
+                    break;
+                }
+               
             case "UC":   
                 reachedNode = super.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("UC")));
                 break;
@@ -31,7 +44,7 @@ public class LLAP extends GenericSearch {
         if (reachedNode == null) {
             result = "NOSOLUTION";
         } else {
-            result = reachedNode.getPath() + ";" + reachedNode.getPathCost() + ";" + problem.getNodesCounter();
+            result = reachedNode.getPath() + ";" + reachedNode.getPathCost() + ";" + (problem.getNodesCounter() +1);
         }
     }
 

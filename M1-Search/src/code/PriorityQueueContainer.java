@@ -1,9 +1,10 @@
+package code;
 import java.util.*;
-public class QueueContainer implements DataContainer {
+public class PriorityQueueContainer implements DataContainer {
     
-    private Queue<Node> queue;
-    public QueueContainer() {
-        queue = new LinkedList<Node>();
+    private PriorityQueue<Node> queue;
+    public PriorityQueueContainer( Comparator<Node> comparator) {
+        queue = new PriorityQueue<Node>(comparator);
     }
     
     public void add(Node node) {
