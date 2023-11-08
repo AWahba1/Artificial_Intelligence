@@ -16,7 +16,6 @@ public class GenericSearch {
                 return node;
             }
 
-            // expand logic
             List<Node> children = problem.expand(node);
             for (Node child : children) {
                 dataContainer.add(child);

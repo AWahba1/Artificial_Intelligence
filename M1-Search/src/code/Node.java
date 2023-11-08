@@ -59,16 +59,31 @@ public class Node {
         return Math.min(buildsRemaining_1 + foodNeeded_1, buildsRemaining_2 + foodNeeded_2);
     }
 
-    public String getPath() {
-        Stack<Operator> stack = new Stack<Operator>();
+    public String getPath(boolean visualize) {
+        Stack<Node> stack = new Stack<Node>();
         Node node = this;
         String result = "";
         while (node.getParent() != null) {
-            stack.push(node.getOperatorApplied());
+            stack.push(node);
             node = node.getParent();
         }
+        
+        if (visualize) {
+	    	System.out.println("State: " + node.getState());
+	    	System.out.println("Money_Spent: " + node.getPathCost());
+	    	System.out.println("----------------------------------");
+        }
+    	
         while (!stack.isEmpty()) {
-            switch(stack.pop()) {
+        	Node n = stack.pop();
+        	       	
+        	if (visualize)
+        	{
+        		System.out.println("State: " + n.getState());
+            	System.out.println("Money_Spent: " + n.getPathCost());
+        	}
+        	
+            switch(n.getOperatorApplied()) {
                 case REQUEST_FOOD:
                     result += "RequestFood,";
                     break;
@@ -88,6 +103,17 @@ public class Node {
                     result += "BUILD2,";
                     break;
             }
+            
+            if (visualize)
+            {
+            	if (n.getOperatorApplied()!=null)
+            	{
+            		System.out.println("Operator_Applied: " + n.getOperatorApplied());
+                	System.out.println("----------------------------------");
+            	}
+            }
+            
+            
         }
         return result.substring(0, result.length() - 1);
     }

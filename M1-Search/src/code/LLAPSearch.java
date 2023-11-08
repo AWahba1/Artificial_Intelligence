@@ -17,9 +17,10 @@ public class LLAPSearch extends GenericSearch {
                 break;
             case "ID":
                 {   
-                    int cutoff = 0 ;
+                    int cutoff = 0;
                     while (reachedNode == null)
                         {
+                            problem = new SearchProblem(inputString, strategy, visualize);
                             problem.setCutOff(cutoff);
                             reachedNode = gs.search(problem, new StackContainer());
                             cutoff++;
@@ -30,24 +31,26 @@ public class LLAPSearch extends GenericSearch {
             case "UC":   
                 reachedNode = gs.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("UC")));
                 break;
-            case "GR1":  // separate between 2 heuristics
+            case "GR1":
                 reachedNode = gs.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("GR1")));
                 break;
-            case "GR2":  // separate between 2 heuristics
+            case "GR2": 
                 reachedNode = gs.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("GR2")));
                 break;
-            case "AS1":  // separate between 2 heuristics
+            case "AS1":  
                 reachedNode = gs.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("AS1")));
                 break;
-            case "AS2":  // separate between 2 heuristics
+            case "AS2": 
                 reachedNode = gs.search(problem, new PriorityQueueContainer(getComparatorBasedOnStrategy("AS2")));
                 break;
         }
         if (reachedNode == null) {
             result = "NOSOLUTION";
         } else {
-            result = reachedNode.getPath() + ";" + reachedNode.getPathCost() + ";" + (problem.getNodesCounter() +1);
+            result = reachedNode.getPath(visualize) + ";" + reachedNode.getPathCost() + ";" + (problem.getNodesCounter() +1);
         }
+        System.out.println("");
+        System.out.println(result);
         return result;
     }
 
@@ -89,5 +92,6 @@ public class LLAPSearch extends GenericSearch {
         
 
     }
+    
    
 }

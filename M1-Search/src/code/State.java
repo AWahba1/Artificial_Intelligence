@@ -41,4 +41,9 @@ public class State {
     public String getStringRepresentation() {
         return String.format("%d-%d-%d-%d-%d-%s", food, energy, material, prosperity, delay, resource == null ? "0" : resource.toString());
     } 
+    
+    public String toString() {
+    	return "("+"Food:"+food+", energy:"+energy+", material:"+material+", prosperity:"+prosperity+", delay:"+delay+", resource: "+ 
+    			(resource == null ? "-" : resource.toString())+")";	
+    }
 }

@@ -29,30 +29,40 @@ public class SearchProblem {
 	  public SearchProblem(String inputString, String strategy, boolean visualize) {
 	    parseInputString(inputString);
 	    if (visualize) {
+	    	
+	    	System.out.println();
+	    	System.out.println("Initial Conditions:");
+	    	System.out.println("-----------------------");
 	    	System.out.println("initialProsperity: " + initialProsperity);
 	    	System.out.println("initialFood: " + initialFood);
 	    	System.out.println("initialMaterials: " + initialMaterials);
 	    	System.out.println("initialEnergy: " + initialEnergy);
+	    	
 	    	System.out.println("unitPriceFood: " + unitPriceFood);
 	    	System.out.println("unitPriceMaterials: " + unitPriceMaterials);
 	    	System.out.println("unitPriceEnergy: " + unitPriceEnergy);
+	    	
 	    	System.out.println("amountRequestFood: " + amountRequestFood);
 	    	System.out.println("delayRequestFood: " + delayRequestFood);
+	    	
 	    	System.out.println("amountRequestMaterials: " + amountRequestMaterials);
 	    	System.out.println("delayRequestMaterials: " + delayRequestMaterials);
-	    	System.out.println("delayRequestMaterials: " + delayRequestMaterials);
+	    	
 	    	System.out.println("amountRequestEnergy: " + amountRequestEnergy);
 	    	System.out.println("delayRequestEnergy: " + delayRequestEnergy);
+	    	
 	    	System.out.println("priceBUILD1: " + priceBUILD1);
+	    	System.out.println("foodUseBUILD1: " + foodUseBUILD1);
 	    	System.out.println("materialsUseBUILD1: " + materialsUseBUILD1);
 	    	System.out.println("energyUseBUILD1: " + energyUseBUILD1);
+	    	System.out.println("prosperityBUILD1: " + prosperityBUILD1);
+
 	    	System.out.println("priceBUILD2: " + priceBUILD2);
+	    	System.out.println("foodUseBUILD2: " + foodUseBUILD2);
 	    	System.out.println("materialsUseBUILD2: " + materialsUseBUILD2);
 	    	System.out.println("energyUseBUILD2: " + energyUseBUILD2);
-	    	System.out.println("prosperityBUILD1: " + prosperityBUILD1);
 	    	System.out.println("prosperityBUILD2: " + prosperityBUILD2);
-	    	System.out.println("foodUseBUILD1: " + foodUseBUILD1);
-	    	System.out.println("foodUseBUILD2: " + foodUseBUILD2);
+	    	System.out.println("-------------------------------------------");
 	    }
 	    State initialState = new State(
 	      initialFood,
@@ -118,18 +128,18 @@ public class SearchProblem {
 	    return node.getState().getProsperity() >= 100;
 	  }
 
-	        // Perform iterative deepening and handle a cutoff that increases
-	      // by 1 each time when expanding
-
-
 
 	  public List<Node> expand(Node parent) {
 	    nodesCounter++;
 	    List<Node> children = new ArrayList<Node>();
 	    if (strategy == "ID")
 	    {
+	    	System.out.println(parent.getDepth());
 	        if (parent.getDepth() < cutoff)
-	          children = expandNode(parent);
+	        {
+	        	 children = expandNode(parent);
+	 	        System.out.println(children);
+	        }
 	        else if (parent.getDepth() == cutoff)
 	          return children;
 	    }
@@ -173,7 +183,7 @@ public class SearchProblem {
 	          Math.min(currentState.getEnergy() - 1 + energyToAdd, 50),
 	          Math.min(currentState.getMaterial() - 1 + materialToAdd, 50),
 	          currentState.getProsperity(),
-	          newDelay,
+	          delayRequestFood,
 	          Resource.FOOD
 	        );
 	      case REQUEST_MATERIAL:
@@ -182,7 +192,7 @@ public class SearchProblem {
 	          Math.min(currentState.getEnergy() - 1 + energyToAdd, 50),
 	          Math.min(currentState.getMaterial() - 1 + materialToAdd, 50),
 	          currentState.getProsperity(),
-	          newDelay,
+	          delayRequestMaterials,
 	          Resource.MATERIAL
 	        );
 	      case REQUEST_ENERGY:
@@ -191,24 +201,26 @@ public class SearchProblem {
 	          Math.min(currentState.getEnergy() - 1 + energyToAdd, 50),
 	          Math.min(currentState.getMaterial() - 1 + materialToAdd, 50),
 	          currentState.getProsperity(),
-	          newDelay,
+	          delayRequestEnergy,
 	          Resource.ENERGY
 	        );
 	      case BUILD1:
-	        return new State(
-	          Math.min(currentState.getFood() - foodUseBUILD1 + foodToAdd, 50),
-	          Math.min(
-	            currentState.getEnergy() - energyUseBUILD1 + energyToAdd,
-	            50
-	          ),
-	          Math.min(
-	            currentState.getMaterial() - materialsUseBUILD1 + materialToAdd,
-	            50
-	          ),
-	          currentState.getProsperity() + prosperityBUILD1,
-	          newDelay,
-	          newResource
-	        );
+	      {
+	    	  return new State(
+	    	          Math.min(currentState.getFood() - foodUseBUILD1 + foodToAdd, 50),
+	    	          Math.min(
+	    	            currentState.getEnergy() - energyUseBUILD1 + energyToAdd,
+	    	            50
+	    	          ),
+	    	          Math.min(
+	    	            currentState.getMaterial() - materialsUseBUILD1 + materialToAdd,
+	    	            50
+	    	          ),
+	    	          currentState.getProsperity() + prosperityBUILD1,
+	    	          newDelay,
+	    	          newResource
+	    	        );
+	      }
 	      case BUILD2:
 	        return new State(
 	          Math.min(currentState.getFood() - foodUseBUILD2 + foodToAdd, 50),
@@ -271,7 +283,8 @@ public class SearchProblem {
 	  }
 
 	  public List<Node> expandNode(Node parent){
-		 List<Node> children = new ArrayList<Node>();
+		List<Node> children = new ArrayList<Node>();
+		
 	    State currentState = parent.getState();
 	    if (
 	      parent.getState().getFood() >= 1 &&
@@ -334,7 +347,8 @@ public class SearchProblem {
 	        }
 	      }
 	      if (parent.getPathCost() + calculatePathCost(Operator.WAIT) <= 100000 
-	      && !visitedStates.contains(getNewState(currentState, parent, Operator.WAIT).getStringRepresentation())) {
+	      && !visitedStates.contains(getNewState(currentState, parent, Operator.WAIT).getStringRepresentation()) 
+	      && parent.getState().getDelay()!=0) {
 	        children.add(
 	          new Node(
 	            getNewState(currentState, parent, Operator.WAIT),
@@ -348,7 +362,8 @@ public class SearchProblem {
 
 	      }
 	      if (parent.getPathCost() + calculatePathCost(Operator.BUILD1) <= 100000
-	      && !visitedStates.contains(getNewState(currentState, parent, Operator.BUILD1).getStringRepresentation())) {
+	      && !visitedStates.contains(getNewState(currentState, parent, Operator.BUILD1).getStringRepresentation()) 
+	      && isOperatorValid(parent, Operator.BUILD1 )) {
 	        children.add(
 	          new Node(
 	            getNewState(currentState, parent, Operator.BUILD1),
@@ -362,7 +377,8 @@ public class SearchProblem {
 
 	      }
 	      if (parent.getPathCost() + calculatePathCost(Operator.BUILD2) <= 100000
-	      && !visitedStates.contains(getNewState(currentState, parent, Operator.BUILD2).getStringRepresentation())) {
+	      && !visitedStates.contains(getNewState(currentState, parent, Operator.BUILD2).getStringRepresentation())
+	      && isOperatorValid(parent, Operator.BUILD2 )) {
 	        children.add(
 	          new Node(
 	            getNewState(currentState, parent, Operator.BUILD2),
@@ -376,6 +392,7 @@ public class SearchProblem {
 
 	      }
 	    }
+	   
 	    return children;
 
 	  } // end expand node
@@ -383,5 +400,23 @@ public class SearchProblem {
 	  public void setCutOff(int cutoff)
 	  {
 	    this.cutoff = cutoff;
+	  }
+	  
+	  public boolean isOperatorValid(Node parent, Operator operator) {
+		  State parentState = parent.getState();
+		  if (operator == Operator.BUILD1)
+		  {
+			  return parentState.getFood()>=SearchProblem.foodUseBUILD1 
+					  && parentState.getEnergy()>=this.energyUseBUILD1 && parentState.getMaterial()>=this.materialsUseBUILD1;
+		  }
+		  else if (operator == Operator.BUILD2)
+		  {
+			  return parentState.getFood()>=SearchProblem.foodUseBUILD2
+					  && parentState.getEnergy()>=this.energyUseBUILD2 && parentState.getMaterial()>=this.materialsUseBUILD2;		 
+		  }
+		  else {
+			 return false; // ONLY BUILD IS ALLOWED FOR NOW
+		  }
+			  
 	  }
 	}
